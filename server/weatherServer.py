@@ -1,9 +1,14 @@
 # -*- coding:utf-8 -*-
+import time
 import urllib.request
 import uuid
-import time
+
 from bs4 import BeautifulSoup
-import dataBase
+
+import pojo.weatherModel
+import pojo.weatherWarning
+import pojo.weatherforecast
+from server import dataBase
 
 
 def getSoup(url):
@@ -16,6 +21,65 @@ def getSoup(url):
     data = data.decode('utf-8')
     soup = BeautifulSoup(data, 'html.parser')
     return soup
+
+
+def getNewMailId():
+    sql = 'select id from weather  where status="1"'
+    return dataBase.getDataforOne(sql)
+
+
+def getNewWeatherMsg():
+    sql = 'select * from weather w,weatherlife wl where w.id=wl.wid order by  wl.create_date DESC LIMIT 0,1'
+    wm = pojo.weatherModel
+    for row in dataBase.getDataAll(sql):
+        wm.weatherModel.id = row[0]
+        wm.weatherModel.overview = row[1]
+        wm.weatherModel.province = row[2]
+        wm.weatherModel.county = row[3]
+        wm.weatherModel.temperature = row[4]
+        wm.weatherModel.weather_condition = row[5]
+        wm.weatherModel.humidity = row[6]
+        wm.weatherModel.wind_direction = row[7]
+        wm.weatherModel.msg_update_time = row[8]
+        wm.weatherModel.pm25 = row[10]
+        wm.weatherModel.warning = row[11]
+        wm.weatherModel.makeup = row[14]
+        wm.weatherModel.cold = row[15]
+        wm.weatherModel.car_wash = row[16]
+        wm.weatherModel.air_pollution = row[17]
+        wm.weatherModel.dress = row[18]
+        wm.weatherModel.ultraviolet_rays = row[19]
+        wm.weatherModel.sport = row[20]
+        wm.weatherModel.go_fishing = row[21]
+    return wm
+
+
+def getNewForecast(id):
+    sql = 'select * from weatherforecast wf where wf.wId="' + id + '" order by f_index asc'
+    wflist = []
+    for row in dataBase.getDataAll(sql):
+        wf = pojo.weatherforecast
+        wf.weatherforecast.f_index = row[2]
+        wf.weatherforecast.f_time = row[3]
+        wf.weatherforecast.situation = row[4]
+        wf.weatherforecast.temperature = row[5]
+        wf.weatherforecast.wind_direction = row[6]
+        wflist.insert(len(wflist), wf)
+    return wflist
+
+
+def getNewWarning(id):
+    sql = 'select * from weatherwarning wf where wf.wId="' + id + '"'
+    wwlist = []
+    for row in dataBase.getDataAll(sql):
+        ww = pojo.weatherWarning
+        ww.weatherWarning.warnTitle = row[2]
+        ww.weatherWarning.warnDate = row[3]
+        ww.weatherWarning.warnCountent = row[4]
+        ww.weatherWarning.warnAnalysis = row[5]
+        ww.weatherWarning.warnTips = row[5]
+        wwlist.insert(len(wwlist), ww)
+    return wwlist
 
 
 def insertWeatherMsg():
@@ -95,7 +159,4 @@ def insertWeatherMsg():
         listSql.insert(len(listSql), lsql)
         dataBase.insertManySql(listSql)
     else:
-        print(time.strftime("["+"%Y-%m-%d %H:%M:%S", time.localtime())+"]与服务器时间相同，不更新")
-
-
-insertWeatherMsg()
+        print(time.strftime("[" + "%Y-%m-%d %H:%M:%S", time.localtime()) + "]与服务器时间相同，不更新")

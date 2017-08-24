@@ -1,4 +1,5 @@
 import mjWeather
+
 from server import sendMail
 
 msg = mjWeather.getWeatherMsg() + '\n\n——来自小明AI管家实时天气情况'
