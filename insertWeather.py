@@ -64,7 +64,7 @@ def insertWeatherMsg():
     nowTime = ssd.strong.string
     sql += '"' + ssd.strong.string + '")'
     dataTime = dataBase.getDataforOne(
-        "select msg_update_time From weather w where to_days(w.create_date) = to_days(now()) LIMIT 0,1")
+        "select msg_update_time From weather w where to_days(w.create_date) = to_days(now()) order by w.create_date desc LIMIT 0,1")
     if dataTime != nowTime:
         listSql.insert(len(listSql), sql)
         tqyb = soup.find(attrs={'class': 'forecast clearfix'}).select('ul')
