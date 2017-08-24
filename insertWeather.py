@@ -1,9 +1,8 @@
 # -*- coding:utf-8 -*-
 import urllib.request
 import uuid
-
+import time
 from bs4 import BeautifulSoup
-
 import dataBase
 
 
@@ -96,7 +95,7 @@ def insertWeatherMsg():
         listSql.insert(len(listSql), lsql)
         dataBase.insertManySql(listSql)
     else:
-        print("与服务器时间相同，不更新")
+        print(time.strftime("["+"%Y-%m-%d %H:%M:%S", time.localtime())+"]与服务器时间相同，不更新")
 
 
 insertWeatherMsg()

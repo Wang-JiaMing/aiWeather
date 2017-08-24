@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import pymysql
+import time
 
 
 # --查询
@@ -25,7 +26,7 @@ def insertManySql(sql):
         while index < len(sql) :
             print(sql[index])
             cur.execute(sql[index])
-            print("插入成功")
+            print(time.strftime("["+"%Y-%m-%d %H:%M:%S", time.localtime())+"]插入成功")
             index += 1
         conn.commit()
     except Exception as e:
