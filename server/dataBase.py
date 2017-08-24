@@ -7,7 +7,7 @@ import time
 
 # --查询
 def getDataforOne(sql):
-    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='root', db='weather', charset="utf8")
+    conn = pymysql.connect(host='192.168.1.105', port=3306, user='root', passwd='root', db='aiWeather', charset="utf8")
     cur = conn.cursor()
     cur.execute(sql)  # "SELECT count(1) FROM weather"
     data = ''
@@ -18,7 +18,7 @@ def getDataforOne(sql):
 
 
 def getDataAll(sql):
-    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='root', db='weather', charset="utf8")
+    conn = pymysql.connect(host='192.168.1.105', port=3306, user='root', passwd='root', db='aiWeather', charset="utf8")
     cur = conn.cursor()
     cur.execute(sql)  # "SELECT count(1) FROM weather"
     return cur.fetchall()
@@ -26,7 +26,7 @@ def getDataAll(sql):
 
 # --插入
 def insertManySql(sql):
-    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='root', db='weather', charset="utf8")
+    conn = pymysql.connect(host='192.168.1.105', port=3306, user='root', passwd='root', db='aiWeather', charset="utf8")
     cur = conn.cursor()
     try:
         index = 0

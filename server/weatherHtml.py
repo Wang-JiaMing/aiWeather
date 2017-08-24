@@ -65,4 +65,4 @@ def getWeatherTitle():
     tip = soup.find(attrs={'class': 'wea_tips clearfix'})
     return tip.em.string
 
-getWeatherMsg()
+# getWeatherMsg()
