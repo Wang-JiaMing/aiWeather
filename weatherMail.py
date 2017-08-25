@@ -1,14 +1,19 @@
 # import weatherHtml
-import time
 import mail
 import weatherModel
 import weatherforecast
 import weatherWarning
 import dataBase
 import mailModel
+import pytz
+import datetime
 
 mailAddressList = ['13422192925@163.com', '601229570@qq.com', '352294249@qq.com']
-autoMsg = ['温差≥5℃', '预警信号', '天气转变']
+
+
+def getTime():
+    tz = pytz.timezone('Asia/Shanghai')
+    return datetime.datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def getNewMailId():
@@ -100,7 +105,7 @@ def autoWeather():
     autoTips = getNewWeatherMsg().weatherModel.autoTips
     status = getNewWeatherMsg().weatherModel.status
     if autoTips != 1 and status != 1 and (
-            int(time.strftime("%H", time.localtime())) < 21 or int(time.strftime("%H", time.localtime())) > 8):
+                    int(time.strftime("%H", time.localtime())) < 21 or int(time.strftime("%H", time.localtime())) > 8):
         sendTem = getSendWeather().weatherModel.temperature
         sendCondition = getSendWeather().weatherModel.weather_condition
         sendWarning = getSendWeather().weatherModel.warning
@@ -130,15 +135,15 @@ def autoWeather():
                 if _condition.find('晴') > -1:
                     content += '天气转变[' + sendCondition + '=>' + _condition + ']，注意防晒;'
             if sendWarning != _warning:
-                title += '预警信号有变('+_warning+')!'
+                title += '预警信号有变(' + _warning + ')!'
                 content += '预警信号有变动,注意查看以下预警信息内容;'
-            i = 0
-            while i < len(mailAddressList):
-                mail.sendMail(title, mailModel.autoModel(content, nowWeather, nowForecast, nowWarning),
-                              mailAddressList[i])
-                i += 1
-            dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
+            print(mailModel.autoModel(content, nowWeather, nowForecast, nowWarning))
+            # i = 0
+            # while i < len(mailAddressList):
+            # mail.sendMail(title, mailModel.autoModel(content, nowWeather, nowForecast, nowWarning),mailAddressList[i])
+            # i += 1
+            # dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
         else:
-            print(time.strftime("[" + "%Y-%m-%d %H:%M:%S", time.localtime()) + "]没新提示内容")
+            print("[" + getTime() + "]没新提示内容")
     else:
-        print(time.strftime("[" + "%Y-%m-%d %H:%M:%S", time.localtime()) + "]自动提示条件不满足，不给予提示")
+        print("[" + getTime() + "]自动提示条件不满足，不给予提示")

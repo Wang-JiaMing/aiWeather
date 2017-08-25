@@ -1,6 +1,12 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-import time
+import pytz
+import datetime
+
+
+def getTime():
+    tz = pytz.timezone('Asia/Shanghai')
+    return datetime.datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def everyDayModel(weather, forecast, warning):
@@ -8,9 +14,9 @@ def everyDayModel(weather, forecast, warning):
     content += '[总体情况]' + weather.weatherModel.overview + '\n\n'
     content += '[地点]' + weather.weatherModel.province + " " + weather.weatherModel.county + '\n'
     content += '------ 当前情况 ------\n'
-    content += '[温度]' + str(weather.weatherModel.temperature) + "\n"
+    content += '[温度]' + str(weather.weatherModel.temperature) + "℃\n"
     content += "[Pm2.5]" + weather.weatherModel.pm25 + "\n"
-    content += "[天气]" + weather.weatherModel.weather_condition + "℃\n"
+    content += "[天气]" + weather.weatherModel.weather_condition + "\n"
     content += "[湿度]" + weather.weatherModel.humidity + '\n'
     content += "[风向]" + weather.weatherModel.wind_direction + '\n'
 
@@ -34,7 +40,7 @@ def everyDayModel(weather, forecast, warning):
         findex += 1
     content += '\n\n'
     content += '                        FROM X.M Tips Server\n'
-    content += '                        ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    content += '                        ' + getTime()
     return content
 
 
@@ -43,9 +49,9 @@ def autoModel(autoMsg, weather, forecast, warning):
     content += '[智能提示]' + autoMsg + '\n\n'
     content += '[地点]' + weather.weatherModel.province + " " + weather.weatherModel.county + '\n'
     content += '------ 当前情况 ------\n'
-    content += '[温度] ' + str(weather.weatherModel.temperature) + "\n"
+    content += '[温度] ' + str(weather.weatherModel.temperature) + "℃\n"
     content += "[Pm2.5]" + weather.weatherModel.pm25 + "\n"
-    content += "[天气] " + weather.weatherModel.weather_condition + "℃\n"
+    content += "[天气] " + weather.weatherModel.weather_condition + "\n"
     content += "[湿度] " + weather.weatherModel.humidity + '\n'
     content += "[风向] " + weather.weatherModel.wind_direction + '\n'
 
@@ -62,5 +68,5 @@ def autoModel(autoMsg, weather, forecast, warning):
     content += '\n\nPS:为什么会收到该邮件?当温差距离上次提醒超过5℃或天气转变或预警信号有变化,即会发送通知提醒!'
     content += '\n\n'
     content += '                        FROM X.M Tips Server\n'
-    content += '                        ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    content += '                        ' + getTime()
     return content

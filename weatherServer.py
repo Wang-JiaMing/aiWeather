@@ -6,6 +6,13 @@ import uuid
 from bs4 import BeautifulSoup
 
 import dataBase
+import pytz
+import datetime
+
+
+def getTime():
+    tz = pytz.timezone('Asia/Shanghai')
+    return datetime.datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def getSoup(url):
@@ -97,4 +104,4 @@ def insertWeatherMsg():
         listSql.insert(len(listSql), lsql)
         dataBase.insertManySql(listSql)
     else:
-        print(time.strftime("[" + "%Y-%m-%d %H:%M:%S", time.localtime()) + "]与服务器时间相同，不更新")
+        print("[" + getTime() + "]与服务器时间相同，不更新")
