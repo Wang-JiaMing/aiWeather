@@ -7,7 +7,7 @@ import server.mailModel
 from server import dataBase
 import time
 
-mailAddressList = ['13422192925@163.com']
+mailAddressList = ['13422192925@163.com', '601229570@qq.com', '352294249@qq.com']
 autoMsg = ['温差≥5℃', '预警信号', '天气转变']
 
 
@@ -97,7 +97,8 @@ def everyDaySend():
 
 def autoWeather():
     autoTips = getNewWeatherMsg().weatherModel.autoTips
-    if autoTips != 1 and (int(time.strftime("%H", time.localtime())) < 21 or int(time.strftime("%H", time.localtime())) > 8):
+    if autoTips != 1 and (
+            int(time.strftime("%H", time.localtime())) < 21 or int(time.strftime("%H", time.localtime())) > 8):
         sendTem = getSendWeather().weatherModel.temperature
         sendCondition = getSendWeather().weatherModel.weather_condition
         sendWarning = getSendWeather().weatherModel.warning
@@ -135,6 +136,7 @@ def autoWeather():
                 mail.sendMail(title, server.mailModel.autoModel(content, nowWeather, nowForecast, nowWarning),
                               mailAddressList[i])
                 i += 1
-
         else:
             print('没新提示内容')
+    else:
+        print('自动提示条件不满足，不给予提示')
