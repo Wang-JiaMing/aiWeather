@@ -53,12 +53,12 @@ def autoModel(autoMsg, weather, forecast, warning):
         content += '------ 现悬挂预警信号 -----\n'
         windex = 0
         while windex < len(warning.weatherWarning.warnTitle):
-            content += warning.weatherWarning.warnTitle + '\n'
-            content += '[悬挂时间]' + warning.weatherWarning.warnDate + '\n'
-            content += '[预警内容]' + warning.weatherWarning.warnContent + '\n'
-            content += '[预警解析]' + warning.weatherWarning.warnAnalysis + '\n'
-            content += '[预警提示]' + warning.weatherWarning.warnTips + '\n\n'
-
+            content += warning.weatherWarning.warnTitle[windex] + '\n'
+            content += '[悬挂时间]' + warning.weatherWarning.warnDate[windex] + '\n'
+            content += '[预警内容]' + warning.weatherWarning.warnContent[windex] + '\n'
+            content += '[预警解析]' + warning.weatherWarning.warnAnalysis[windex] + '\n'
+            content += '[预警提示]' + warning.weatherWarning.warnTips[windex] + '\n\n'
+            windex += 1
     content += '\n\nPS:为什么会收到该邮件?当温差距离上次提醒超过5℃或天气转变或预警信号有变化,即会发送通知提醒!'
     content += '\n\n'
     content += '                        FROM X.M Tips Server\n'

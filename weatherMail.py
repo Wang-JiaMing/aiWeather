@@ -1,6 +1,5 @@
 # import weatherHtml
 import time
-
 import mail
 import weatherModel
 import weatherforecast
@@ -114,7 +113,6 @@ def autoWeather():
         nowWarning = ''
         content = ''
         if sendTem - _tmp <= -5 or sendTem - _tmp >= 5 or sendCondition != _condition or sendWarning != _warning:
-            dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
             nowForecast = getNewForecast(id)
             nowWarning = getNewWarning(id)
             title = "X.M Auto Tips: "
@@ -126,19 +124,20 @@ def autoWeather():
                     content += ',请注意保暖'
                 content += ';'
             if sendCondition != _condition:
-                title += '天气有变化 ' + sendCondition + '=>' + _condition + ' ! '
+                title += '天气有变化(' + sendCondition + '=>' + _condition + ')! '
                 if _condition.find('雨') > -1:
                     content += '天气转变[' + sendCondition + '=>' + _condition + ']，记得带伞;'
                 if _condition.find('晴') > -1:
                     content += '天气转变[' + sendCondition + '=>' + _condition + ']，注意防晒;'
             if sendWarning != _warning:
-                title += '新预警信号!'
+                title += '预警信号有变('+_warning+')!'
                 content += '预警信号有变动,注意查看以下预警信息内容;'
             i = 0
             while i < len(mailAddressList):
                 mail.sendMail(title, mailModel.autoModel(content, nowWeather, nowForecast, nowWarning),
                               mailAddressList[i])
                 i += 1
+            dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
         else:
             print('没新提示内容')
     else:
