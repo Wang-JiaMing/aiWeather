@@ -62,7 +62,7 @@ def insertWeatherMsg():
     sd_fx = soup.find(attrs={'class': 'wea_about clearfix'})
     sql += '"' + ssd.em.string + '",'
     sql += '"' + ssd.b.string + '",'
-    sql += '"' + sd_fx.span.string + '",'
+    sql += '"' + sd_fx.span.string.split(" ")[1] + '",'
     sql += '"' + sd_fx.em.string + '",'
     nowTime = ssd.strong.string
     sql += '"' + ssd.strong.string + '")'

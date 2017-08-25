@@ -12,6 +12,7 @@ class weatherModel:
     create_date = ''
     pm25 = ''
     warning = ''
+    autoTips = ''
     makeup = ''
     cold = ''
     car_wash = ''

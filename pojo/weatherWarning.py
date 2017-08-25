@@ -1,6 +1,6 @@
 class weatherWarning:
-    warnTitle = ''
-    warnDate = ''
-    warnContent = ''
-    warnAnalysis = ''
-    warnTips = ''
+    warnTitle = []
+    warnDate = []
+    warnContent = []
+    warnAnalysis = []
+    warnTips = []
