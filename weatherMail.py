@@ -15,6 +15,10 @@ def getTime():
     tz = pytz.timezone('Asia/Shanghai')
     return datetime.datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
 
+def getHouse():
+    tz = pytz.timezone('Asia/Shanghai')
+    return datetime.datetime.now(tz).strftime('%H')
+
 
 def getNewMailId():
     sql = 'select id from weather  where status="1"'
@@ -104,8 +108,7 @@ def everyDaySend():
 def autoWeather():
     autoTips = getNewWeatherMsg().weatherModel.autoTips
     status = getNewWeatherMsg().weatherModel.status
-    if autoTips != 1 and status != 1 and (
-                    int(time.strftime("%H", time.localtime())) < 21 or int(time.strftime("%H", time.localtime())) > 8):
+    if autoTips != 1 and status != 1 :
         sendTem = getSendWeather().weatherModel.temperature
         sendCondition = getSendWeather().weatherModel.weather_condition
         sendWarning = getSendWeather().weatherModel.warning
