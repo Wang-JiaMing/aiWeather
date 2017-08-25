@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-import pojo.weatherforecast
-import pojo.weatherWarning
 import time
+
 
 def everyDayModel(weather, forecast, warning):
     content = ''
@@ -19,12 +18,12 @@ def everyDayModel(weather, forecast, warning):
         content += '------ 现悬挂预警信号 -----\n'
         windex = 0
         while windex < len(warning.weatherWarning.warnTitle):
-            content += warning.weatherWarning.warnTitle + '\n'
-            content += '[悬挂时间]' + warning.weatherWarning.warnDate + '\n'
-            content += '[预警内容]' + warning.weatherWarning.warnContent + '\n'
-            content += '[预警解析]' + warning.weatherWarning.warnAnalysis + '\n'
-            content += '[预警提示]' + warning.weatherWarning.warnTips + '\n\n'
-
+            content += warning.weatherWarning.warnTitle[windex] + '\n'
+            content += '[悬挂时间]' + warning.weatherWarning.warnDate[windex] + '\n'
+            content += '[预警内容]' + warning.weatherWarning.warnContent[windex] + '\n'
+            content += '[预警解析]' + warning.weatherWarning.warnAnalysis[windex] + '\n'
+            content += '[预警提示]' + warning.weatherWarning.warnTips[windex] + '\n\n'
+            windex += 1
     content += '------ 未来3天预测 -----\n'
     findex = 0
     while findex < 3:
@@ -35,12 +34,13 @@ def everyDayModel(weather, forecast, warning):
         findex += 1
     content += '\n\n'
     content += '                        FROM X.M Tips Server\n'
-    content += '                        '+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    content += '                        ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     return content
 
-def autoModel(autoMsg,weather, forecast, warning):
+
+def autoModel(autoMsg, weather, forecast, warning):
     content = ''
-    content += '[智能提示]'+autoMsg+'\n\n'
+    content += '[智能提示]' + autoMsg + '\n\n'
     content += '[地点]' + weather.weatherModel.province + " " + weather.weatherModel.county + '\n'
     content += '------ 当前情况 ------\n'
     content += '[温度] ' + str(weather.weatherModel.temperature) + "\n"
@@ -62,5 +62,5 @@ def autoModel(autoMsg,weather, forecast, warning):
     content += '\n\nPS:为什么会收到该邮件?当温差距离上次提醒超过5℃或天气转变或预警信号有变化,即会发送通知提醒!'
     content += '\n\n'
     content += '                        FROM X.M Tips Server\n'
-    content += '                        '+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    content += '                        ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     return content

@@ -1,11 +1,12 @@
 # import weatherHtml
-from server import mail
-import pojo.weatherModel
-import pojo.weatherWarning
-import pojo.weatherforecast
-import server.mailModel
-from server import dataBase
 import time
+
+import mail
+import weatherModel
+import weatherforecast
+import weatherWarning
+import dataBase
+import mailModel
 
 mailAddressList = ['13422192925@163.com', '601229570@qq.com', '352294249@qq.com']
 autoMsg = ['温差≥5℃', '预警信号', '天气转变']
@@ -18,7 +19,7 @@ def getNewMailId():
 
 def getSendWeather():
     sql = 'select * from weather  where status="1"'
-    w = pojo.weatherModel
+    w = weatherModel
     for row in dataBase.getDataAll(sql):
         w.weatherModel.temperature = row[4]
         w.weatherModel.weather_condition = row[5]
@@ -28,7 +29,7 @@ def getSendWeather():
 
 def getNewWeatherMsg():
     sql = 'select * from weather w,weatherlife wl where w.id=wl.wid order by  wl.create_date DESC LIMIT 0,1'
-    wm = pojo.weatherModel
+    wm = weatherModel
     for row in dataBase.getDataAll(sql):
         wm.weatherModel.id = row[0]
         wm.weatherModel.overview = row[1]
@@ -41,6 +42,7 @@ def getNewWeatherMsg():
         wm.weatherModel.msg_update_time = row[8]
         wm.weatherModel.pm25 = row[10]
         wm.weatherModel.warning = row[11]
+        wm.weatherModel.status = row[12]
         wm.weatherModel.autoTips = row[13]
         wm.weatherModel.makeup = row[16]
         wm.weatherModel.cold = row[17]
@@ -55,7 +57,7 @@ def getNewWeatherMsg():
 
 def getNewForecast(id):
     sql = 'select * from weatherforecast wf where wf.wId="' + id + '" order by f_index asc'
-    wf = pojo.weatherforecast
+    wf = weatherforecast
     for row in dataBase.getDataAll(sql):
         wf.weatherforecast.f_index.append(row[2])
         wf.weatherforecast.f_time.append(row[3])
@@ -67,13 +69,13 @@ def getNewForecast(id):
 
 def getNewWarning(id):
     sql = 'select * from weatherwarning wf where wf.wId="' + id + '"'
-    ww = pojo.weatherWarning
+    ww = weatherWarning
     for row in dataBase.getDataAll(sql):
         ww.weatherWarning.warnTitle.append(row[2])
         ww.weatherWarning.warnDate.append(row[3])
-        ww.weatherWarning.warnCountent.append(row[4])
+        ww.weatherWarning.warnContent.append(row[4])
         ww.weatherWarning.warnAnalysis.append(row[5])
-        ww.weatherWarning.warnTips.append(row[5])
+        ww.weatherWarning.warnTips.append(row[6])
     return ww
 
 
@@ -85,7 +87,7 @@ def everyDaySend():
         warning = getNewWarning(weather.weatherModel.id)
         title = '天气早报:' + forecast.weatherforecast.situation[0] + ' 气温 ' + forecast.weatherforecast.temperature[
             0] + " " + weather.weatherModel.warning
-        content = server.mailModel.everyDayModel(weather, forecast, warning)
+        content = mailModel.everyDayModel(weather, forecast, warning)
         i = 0
         while i < len(mailAddressList):
             mail.sendMail(title, content, mailAddressList[i])
@@ -97,43 +99,44 @@ def everyDaySend():
 
 def autoWeather():
     autoTips = getNewWeatherMsg().weatherModel.autoTips
-    if autoTips != 1 and (
+    status = getNewWeatherMsg().weatherModel.status
+    if autoTips != 1 and status != 1 and (
             int(time.strftime("%H", time.localtime())) < 21 or int(time.strftime("%H", time.localtime())) > 8):
         sendTem = getSendWeather().weatherModel.temperature
         sendCondition = getSendWeather().weatherModel.weather_condition
         sendWarning = getSendWeather().weatherModel.warning
-        nowTmp = getNewWeatherMsg().weatherModel.temperature
-        nowWarning = getNewWeatherMsg().weatherModel.warning
-        nowCondition = getNewWeatherMsg().weatherModel.weather_condition
+        _tmp = getNewWeatherMsg().weatherModel.temperature
+        _warning = getNewWeatherMsg().weatherModel.warning
+        _condition = getNewWeatherMsg().weatherModel.weather_condition
         id = getNewWeatherMsg().weatherModel.id
         nowWeather = getNewWeatherMsg()
         nowForecast = ''
         nowWarning = ''
         content = ''
-        if sendTem - nowTmp <= -5 or sendTem - nowTmp >= 5 or sendCondition != nowCondition or sendWarning != nowWarning:
+        if sendTem - _tmp <= -5 or sendTem - _tmp >= 5 or sendCondition != _condition or sendWarning != _warning:
             dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
             nowForecast = getNewForecast(id)
             nowWarning = getNewWarning(id)
             title = "X.M Auto Tips: "
             content = ''
-            if sendTem - nowTmp <= -5 or sendTem - nowTmp >= 5:
+            if sendTem - _tmp <= -5 or sendTem - _tmp >= 5:
                 title += '温差过大! '
-                content += '温差' + str(int(sendTem) - int(nowTmp)) + '℃'
-                if sendTem - nowTmp <= -5:
+                content += '温差' + str(int(sendTem) - int(_tmp)) + '℃'
+                if sendTem - _tmp <= -5:
                     content += ',请注意保暖'
                 content += ';'
-            if sendCondition != nowCondition:
-                title += '天气有变化 ' + sendCondition + '=>' + nowCondition + ' ! '
-                if nowCondition.find('雨') > -1:
-                    content += '天气转变[' + sendCondition + '=>' + nowCondition + ']，记得带伞;'
-                if nowCondition.find('晴') > -1:
-                    content += '天气转变[' + sendCondition + '=>' + nowCondition + ']，注意防晒;'
-            if sendWarning != nowWarning:
+            if sendCondition != _condition:
+                title += '天气有变化 ' + sendCondition + '=>' + _condition + ' ! '
+                if _condition.find('雨') > -1:
+                    content += '天气转变[' + sendCondition + '=>' + _condition + ']，记得带伞;'
+                if _condition.find('晴') > -1:
+                    content += '天气转变[' + sendCondition + '=>' + _condition + ']，注意防晒;'
+            if sendWarning != _warning:
                 title += '新预警信号!'
                 content += '预警信号有变动,注意查看以下预警信息内容;'
             i = 0
             while i < len(mailAddressList):
-                mail.sendMail(title, server.mailModel.autoModel(content, nowWeather, nowForecast, nowWarning),
+                mail.sendMail(title, mailModel.autoModel(content, nowWeather, nowForecast, nowWarning),
                               mailAddressList[i])
                 i += 1
         else:

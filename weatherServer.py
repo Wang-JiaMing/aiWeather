@@ -2,11 +2,10 @@
 import time
 import urllib.request
 import uuid
+
 from bs4 import BeautifulSoup
-import pojo.weatherModel
-import pojo.weatherWarning
-import pojo.weatherforecast
-from server import dataBase
+
+import dataBase
 
 
 def getSoup(url):
