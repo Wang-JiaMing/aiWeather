@@ -84,7 +84,7 @@ def everyDaySend():
     if oid != weather.weatherModel.id:
         forecast = getNewForecast(weather.weatherModel.id)
         warning = getNewWarning(weather.weatherModel.id)
-        title = '天气早报:' + forecast.weatherforecast.situation[0] + ' 气温 ' + forecast.weatherforecast.temperature[
+        title = 'X.M Tips天气早报:' + forecast.weatherforecast.situation[0] + ' 气温 ' + forecast.weatherforecast.temperature[
             0] + " " + weather.weatherModel.warning
         content = mailModel.everyDayModel(weather, forecast, warning)
         i = 0
@@ -139,6 +139,6 @@ def autoWeather():
                 i += 1
             dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
         else:
-            print('没新提示内容')
+            print(time.strftime("[" + "%Y-%m-%d %H:%M:%S", time.localtime()) + "]没新提示内容")
     else:
-        print('自动提示条件不满足，不给予提示')
+        print(time.strftime("[" + "%Y-%m-%d %H:%M:%S", time.localtime()) + "]自动提示条件不满足，不给予提示")
