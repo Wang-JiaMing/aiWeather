@@ -35,6 +35,15 @@ def getSendWeather():
     return w
 
 
+def getOldSendWeather():
+    sql = 'select * from weather where status="1" or autoTips="1" order by create_date desc limit 0,1'
+    w = weatherModel
+    for row in dataBase.getDataAll(sql):
+        w.weatherModel.temperature = row[4]
+        w.weatherModel.weather_condition = row[5]
+        w.weatherModel.warning = row[11]
+    return w
+
 def getNewWeatherMsg():
     sql = 'select * from weather w,weatherlife wl where w.id=wl.wid order by  wl.create_date DESC LIMIT 0,1'
     wm = weatherModel
@@ -109,9 +118,9 @@ def autoWeather():
     autoTips = getNewWeatherMsg().weatherModel.autoTips
     status = getNewWeatherMsg().weatherModel.status
     if autoTips != 1 and status != 1 :
-        sendTem = getSendWeather().weatherModel.temperature
-        sendCondition = getSendWeather().weatherModel.weather_condition
-        sendWarning = getSendWeather().weatherModel.warning
+        sendTem = getOldSendWeather().weatherModel.temperature
+        sendCondition = getOldSendWeather().weatherModel.weather_condition
+        sendWarning = getOldSendWeather().weatherModel.warning
         _tmp = getNewWeatherMsg().weatherModel.temperature
         _warning = getNewWeatherMsg().weatherModel.warning
         _condition = getNewWeatherMsg().weatherModel.weather_condition
@@ -140,12 +149,12 @@ def autoWeather():
             if sendWarning != _warning:
                 title += '预警信号有变(' + _warning + ')!'
                 content += '预警信号有变动,注意查看以下预警信息内容;'
-            print(mailModel.autoModel(content, nowWeather, nowForecast, nowWarning))
-            # i = 0
-            # while i < len(mailAddressList):
-            # mail.sendMail(title, mailModel.autoModel(content, nowWeather, nowForecast, nowWarning),mailAddressList[i])
-            # i += 1
-            # dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
+            # print(mailModel.autoModel(content, nowWeather, nowForecast, nowWarning))
+            i = 0
+            while i < len(mailAddressList):
+                mail.sendMail(title, mailModel.autoModel(content, nowWeather, nowForecast, nowWarning),mailAddressList[i])
+                i += 1
+            dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
         else:
             print("[" + getTime() + "]没新提示内容")
     else:
