@@ -3,6 +3,13 @@
 
 import pymysql
 import time
+import pytz
+import datetime
+
+
+def getTime():
+    tz = pytz.timezone('Asia/Shanghai')
+    return datetime.datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
 
 
 # --查询
@@ -34,7 +41,7 @@ def insertManySql(sql):
         while index < len(sql):
             print(sql[index])
             cur.execute(sql[index])
-            print(time.strftime("[" + "%Y-%m-%d %H:%M:%S", time.localtime()) + "]插入成功")
+            print("[" + getTime() + "]插入成功")
             index += 1
         conn.commit()
     except Exception as e:
@@ -48,7 +55,7 @@ def update(sql):
     cur = conn.cursor()
     try:
             cur.execute(sql)
-            print(time.strftime("[" + "%Y-%m-%d %H:%M:%S", time.localtime()) + "]更新成功")
+            print("[" + getTime() + "]更新成功")
             conn.commit()
     except Exception as e:
         print(e)

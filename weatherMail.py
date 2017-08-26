@@ -112,7 +112,8 @@ def everyDaySend():
         if oid != '':
             dataBase.update('update weather t set t.status="0" where t.id="' + oid + '"')
         dataBase.update('update weather t set t.status="1" where t.id="' + weather.weatherModel.id + '"')
-
+    else:
+        print("["+getTime()+"]不重复发送")
 
 def autoWeather():
     autoTips = getNewWeatherMsg().weatherModel.autoTips
