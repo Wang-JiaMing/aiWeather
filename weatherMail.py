@@ -8,7 +8,7 @@ import mailModel
 import pytz
 import datetime
 
-mailAddressList = ['13422192925@163.com', '601229570@qq.com', '352294249@qq.com']
+mailAddressList = ['13422192925@163.com']  # , '601229570@qq.com', '352294249@qq.com']
 
 
 def getTime():
@@ -117,7 +117,10 @@ def autoWeather():
                     break
                 nWarnIndex += 1
 
-        if oldWeather.temperature - nw.temperature <= -5 or oldWeather.temperature - nw.temperature >= 5 or oldWeather.weather_condition != nw.weather_condition or tipsType == -1:
+        if oldWeather.temperature - nw.temperature <= -5 or oldWeather.temperature - nw.temperature >= 5 or \
+                (oldWeather.weather_condition != nw.weather_condition and oldWeather.weather_condition != nw.weather_condition and nw.weather_condition.find(
+                        '晴') == -1 and nw.weather_condition.find('多云') == -1 and nw.weather_condition.find(
+            '阴') == -1) or tipsType == -1:
             nForecast = getNewForecast(nw.id)
             title = "X.M Auto Tips: "
             content = ''
@@ -127,8 +130,8 @@ def autoWeather():
                 if oldWeather.temperature - nw.temperature <= -5:
                     content += ',请注意保暖'
                 content += ';'
-            if oldWeather.weather_condition != nw.weather_condition and (
-                            nw.weather_condition.find('晴') == -1 or nw.weather_condition.find('多云') == -1):
+            if oldWeather.weather_condition != nw.weather_condition and nw.weather_condition.find(
+                    '晴') == -1 and nw.weather_condition.find('多云') == -1 and nw.weather_condition.find('阴') == -1:
                 title += '天气有变化(' + oldWeather.weather_condition + '-->' + nw.weather_condition + ')! '
                 if nw.weather_condition.find('雨') > -1:
                     content += '天气转变[' + oldWeather.weather_condition + '-->' + nw.weather_condition + ']，记得带伞;'
@@ -141,7 +144,7 @@ def autoWeather():
             while i < len(mailAddressList):
                 mail.sendMail(title, mailModel.autoModel(content, nw, nForecast, nWarning), mailAddressList[i])
                 i += 1
-            dataBase.update('update weather t set t.autoTips="1" where t.id="' + id + '"')
+            dataBase.update('update weather t set t.autoTips="1" where t.id="' + str(id) + '"')
         else:
             print("[" + getTime() + "]没新提示内容")
     else:
