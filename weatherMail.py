@@ -145,6 +145,7 @@ def autoWeather():
                 mail.sendMail(title, mailModel.autoModel(content, nw, nForecast, nWarning), mailAddressList[i])
                 i += 1
             dataBase.update('update weather t set t.autoTips="1" where t.id="' + str(nw.id) + '"')
+
         else:
             print("[" + getTime() + "]没新提示内容")
     else:
